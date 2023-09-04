@@ -28,6 +28,8 @@ def img_to_txt(original_picture_name, preprocessed_picture_name, txt_picture_nam
 
     with open(txt_picture_name, 'w') as f:
         for value in decimal_values:
-            f.write(f"    {value};\n") 
+            f.write(f"{value}\n") 
     return decimal_values
 
+
+img_to_txt(original_picture_name, preprocessed_picture_name, txt_picture_name, desired_width, desired_height)
