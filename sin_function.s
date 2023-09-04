@@ -1,15 +1,15 @@
-@ s0 = x
-@ r0 = n
-@ r1 = 2n + 1
-@ r2 = power counter
+@ r0 = 
+@ r1 = 
+@ r2 = 
 @ r3 = n max
-@ r4 = Resultado factorial
-@ s1 = Resultado potencia
-@ s2 = Resultado temporal seno
-@ s3 = Resultado acumulado seno
+@ r4 = potencia acumulada
+@ r8 = x
+@ r9 = y
+@ r10 = numerador
+@ r11 = potencia temporal
+@ r12 = valor temporal mul/div
+@ r5 = k
 
-.arch armv7-a
-.fpu vfpv3-d16
 
 .global _start
 
@@ -17,38 +17,52 @@
 _start:
 
 main:
-    mov r3, #10
-    mov r0, #2
-    vmov.f32 s0, #2.0
-    vmov.f32 s1, s0
-    b sin_iteration
-
-sin_iteration:
-    add r1, r0, r0
-    add r1, #1
-    mov r4, r1
-    b factorial
-
-factorial:
-    sub r1, #1
-    mul r4, r1
-    cmp r1, #1
-    beq pre_power
-    b factorial
-    
-pre_power:
-    add r1, r0, r0
-    add r1, #1
-    mov r2, r1
+    mov r8, #15
+    mov r9, #50
+    mov r5, #10
+    mov r12, #6
+    mul r8, r12
+    mov r12, #75
+    sdiv r8, r12
+    mov r10, r8
+    mov r12, #0x13b0
+    mul r10, r12
+    mov r4, r8
+    mov r3, #7
     b power
     
 power:
-    sub r2, #1
-    vmul.f32 s1, s1, s0
-    cmp r2, #1
-    beq end
+    sub r3, #1
+    mul r4, r8
+    cmp r3, #5
+    beq pow3
+    cmp r3, #3
+    beq pow5
+    cmp r3, #1
+    ble pow7
+    
+pow3:
+    mov r11, r4
+    mov r12, #0x348
+    mul r11, r12
+    sub r10, r11
     b power
- end:
+    
+pow5:
+    mov r11, r4
+    mov r12, #0x2a
+    mul r11, r12
+    add r10, r11
+    b power
+    
+pow7:
+    sub r10, r4
+    mul r10, r5
+    mov r12, #0x13b0
+    sdiv r10, r12
+    b end
+    
+end:
     mov r7, #1        
     mov r0, #0        
     svc 0             
