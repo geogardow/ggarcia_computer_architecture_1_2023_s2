@@ -1,23 +1,33 @@
-@ r0 = read/write
-@ r1 = read/write
-@ r2 = read/write
-@ r7 = read/write
+@ r0 = 
+@ r1 = 
+@ r2 = 
 @ r3 = n max
 @ r4 = potencia acumulada
-@ r8 = x/y
-@ r9 = y/x
-@ r10 = y'/x'
+@ r8 = x
+@ r9 = y
+@ r10 = numerador
 @ r11 = potencia temporal
 @ r12 = valor temporal mul/div
 @ r5 = k
+
 
 .global _start
 
 .text
 _start:
+    add sp, #8
+    mov r4, #0
     
-sin_function:
-    mov r5, #5
+loop:
+    pop {r0}
+    cmp r0, #0
+    beq main
+    bl atoi
+    add r4, r0
+    b loop
+    
+main:
+    mov r5, r4
     mov r8, #15
     mov r9, #50
     mov r12, #6
@@ -60,7 +70,14 @@ pow7:
     mul r10, r5
     mov r12, #0x13b0
     sdiv r10, r12
-    add r10, r9
+    b print
+    
+print:
+    mov r0, #1
+    mov r1, r10					
+    mov r2, #3					@ buffer's len
+    mov r7, #4					@ sys call to write 
+    swi 0
     b end
     
 end:
