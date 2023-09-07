@@ -6,7 +6,7 @@ txt_picture_name = 'test.txt'
 desired_width = 640
 desired_height = 640
 
-def img_to_txt(original_picture_name, preprocessed_picture_name, txt_picture_name, desired_width, desired_height):
+def img_to_txt(original_picture_name = 'test.jpg', txt_picture_name = 'test.txt', desired_width = 640, desired_height = 640):
 
     # Open the image file
     image = Image.open(original_picture_name)
@@ -18,7 +18,7 @@ def img_to_txt(original_picture_name, preprocessed_picture_name, txt_picture_nam
     resized_image = grayscale_image.resize((desired_width, desired_height))
 
     # Save the preprocessed image
-    resized_image.save(preprocessed_picture_name)
+    #resized_image.save(preprocessed_picture_name)
 
     # Get pixel data as a sequence
     pixel_data = list(resized_image.getdata())
@@ -31,5 +31,3 @@ def img_to_txt(original_picture_name, preprocessed_picture_name, txt_picture_nam
             f.write(f"{str(value).zfill(3)}\n") 
     return decimal_values
 
-
-img_to_txt(original_picture_name, preprocessed_picture_name, txt_picture_name, desired_width, desired_height)

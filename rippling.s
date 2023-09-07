@@ -24,7 +24,7 @@
 
 .data
     input_file: 		.asciz "test.txt"
-    output_file: 		.asciz "image.txt"
+    output_file: 		.asciz "image1.txt"
     buffer:     		.space 3     
     error_msg:   		.asciz  "Error opening file\n"
     selector:   		.asciz  ";"
@@ -58,7 +58,7 @@ main:
     mov r9, #0          	@ Counter y
     push {r4}
     
-    mov r5, #100        	@ k inicial
+    mov r5, #5
     b read
     
 read:
@@ -114,7 +114,7 @@ sin_function:
     mov r10, r8   		@ Se copia el valor de r8 en r10, donde se irá acumulando el denominador del polinomio de Taylor.
     mov r12, #6       		@ Se carga el valor 6 en r12, una aproximación de 2*pi.
     mul r10, r12       		@ Se multiplica x por 6 y se almacena en r8.
-    mov r12, #550      		@ Se carga el valor 75 en r12, siendo este Lxy.
+    mov r12, #4125     		@ Se carga el valor 75 en r12, siendo este Lxy.
     sdiv r10, r12      		@ Se realiza una división entera de 6x entre 75 y se almacena en r8.
     mov r12, #0x13b0  		@ Se carga 7! en r12, que acompaña al termino con x de menor grado.
     mul r10, r12      		@ Se multiplica x por 7! y se actualiza r10.
