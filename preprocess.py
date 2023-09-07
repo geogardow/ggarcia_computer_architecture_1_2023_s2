@@ -4,7 +4,7 @@ original_picture_name = 'test.jpg'
 preprocessed_picture_name = 'test_preprocessed.jpg'
 txt_picture_name = 'test.txt'
 desired_width = 640
-desired_height = 480
+desired_height = 640
 
 def img_to_txt(original_picture_name, preprocessed_picture_name, txt_picture_name, desired_width, desired_height):
 
@@ -28,7 +28,7 @@ def img_to_txt(original_picture_name, preprocessed_picture_name, txt_picture_nam
 
     with open(txt_picture_name, 'w') as f:
         for value in decimal_values:
-            f.write(f"{value}\n") 
+            f.write(f"{str(value).zfill(3)}\n") 
     return decimal_values
 
 
