@@ -2,6 +2,7 @@ import subprocess
 from preprocess import *
 from PIL import Image
 import os
+import shutil
 
 def run(command):
     try:
@@ -46,5 +47,30 @@ def create(filename):
 
     img.save(filename+".png")
     img.show()
+
+def relocate(source_file, destination_path):
+    try:
+        destination_path = destination_path + "/" + source_file
+        # Check if the source file exists
+        if not os.path.isfile(source_file):
+            return False
+        
+        # If the destination path exists and is a file, remove it (overwrite)
+        if os.path.exists(destination_path):
+            if os.path.isfile(destination_path):
+                os.remove(destination_path)
+            else:
+                return False
+        
+        # Create the destination directory if it doesn't exist
+        destination_directory = os.path.dirname(destination_path)
+        os.makedirs(destination_directory, exist_ok=True)
+        
+        # Move the file to the destination
+        shutil.move(source_file, destination_path)
+        return True
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return False
 
     

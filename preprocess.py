@@ -21,10 +21,15 @@ def img_to_txt(original_picture_name = 'test.jpg', txt_picture_name = 'test.txt'
     #resized_image.save(preprocessed_picture_name)
 
     # Get pixel data as a sequence
-    pixel_data = list(resized_image.getdata())
 
-    # Convert intensity values to decimal representation
-    decimal_values = [intensity for intensity in pixel_data]
+    decimal_values = []
+    for y in range(desired_height):
+        for x in range(desired_width):
+            # Get the intensity value at the current pixel
+            intensity = resized_image.getpixel((x, y))
+            
+            # Append the intensity value to the list
+            decimal_values.append(intensity)
 
     with open(txt_picture_name, 'w') as f:
         for value in decimal_values:
