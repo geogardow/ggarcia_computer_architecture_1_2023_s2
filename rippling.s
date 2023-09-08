@@ -23,8 +23,8 @@
 @ r12 = valor temporal mul/div
 
 .data
-    input_file: 		.asciz "raw24.txt"
-    output_file: 		.asciz "image25.txt"
+    input_file: 		.asciz "raw39.txt"
+    output_file: 		.asciz "image40.txt"
     buffer:     		.space 3     
     error_msg:   		.asciz  "Error opening file\n"
     selector:   		.asciz  ";"
@@ -58,7 +58,7 @@ main:
     mov r9, #0          	@ Counter y
     push {r4}
     
-    mov r5, #125
+    mov r5, #80
     b read
     
 read:

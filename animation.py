@@ -1,26 +1,36 @@
-import matplotlib.pyplot as plt
-from matplotlib.animation import FFMpegWriter
+import cv2
+import os
 
-# Create a figure and axis
-fig, ax = plt.subplots()
+def animate():
+    # Path to the directory containing your image files
+    image_directory = 'images'
 
-# Create an empty list to store the images
-images = []
+    # Get a list of image files in the directory
+    image_files = [os.path.join(image_directory, filename) for filename in os.listdir(image_directory) if filename.endswith('.png')]
 
-# Load each image and append it to the images list
-for i in range(1,41,1):
-    img = plt.imread('images/image'+str(i)+'.png')
-    img_plot = ax.imshow(img)
-    images.append([img_plot])
+    # Sort the image files based on their numerical part
+    image_files.sort(key=lambda x: int(os.path.splitext(os.path.basename(x))[0][-2:]))
 
-# Create an animation
-ani = plt.ArtistAnimation(fig, images, interval=100, blit=True)
+    # Set the output video file name
+    output_video = 'animation.mp4'
 
-# Define the writer for saving the animation as an MP4 file
-writer = FFMpegWriter(fps=10, metadata=dict(artist='Geo García D'), bitrate=1800)
+    # Define the frame rate (frames per second)
+    frame_rate = 4  
 
-# Save the animation as an MP4 file
-ani.save('animation.mp4', writer=writer)
+    # Define the video dimensions based on the first image's size
+    first_image = cv2.imread(image_files[0])
+    height, width, layers = first_image.shape
 
-# Show the animation (optional)
-plt.show()
+    # Initialize the video writer
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # You can change the codec as needed
+    video_writer = cv2.VideoWriter(output_video, fourcc, frame_rate, (width, height))
+
+    # Loop through the images and add them to the video with the specified delay
+    for image_file in image_files:
+        frame = cv2.imread(image_file)
+        video_writer.write(frame)
+
+    #Release the video writer
+    video_writer.release()
+
+    print(f"Video '{output_video}' created successfully.")

@@ -68,6 +68,8 @@ def relocate(source_file, destination_path):
         
         # Move the file to the destination
         shutil.move(source_file, destination_path)
+        os.chmod(destination_path, 0o666)
+
         return True
     except Exception as e:
         print(f"An error occurred: {str(e)}")
