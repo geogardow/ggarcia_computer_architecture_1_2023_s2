@@ -12,7 +12,7 @@
 @ r1 = read/write
 @ r2 = read/write
 @ r3 = n max
-@ r4 = potencia
+@ r4 = constantes
 @ r5 = k
 @ r6 = temporal storage for output file
 @ r7 = read/write
@@ -24,7 +24,7 @@
 
 .data
     input_file: 		.asciz "test.txt"
-    output_file: 		.asciz "image1.txt"
+    output_file: 		.asciz "image40.txt"
     buffer:     		.space 3     
     error_msg:   		.asciz  "Error opening file\n"
     selector:   		.asciz  ";"
@@ -58,7 +58,7 @@ main:
     mov r9, #0          	@ Counter y
     push {r4}
     
-    mov r5, #5
+    mov r5, #200
     b read
     
 read:
@@ -100,7 +100,8 @@ separator:
     bx lr      	  
 
 check_counters:
-    cmp r8, #640
+    ldr r4, =639
+    cmp r8, r4
     blt inc_xcounter
     add r9, #1
     mov r8, #0
@@ -112,50 +113,152 @@ inc_xcounter:
    
 sin_function:
     mov r10, r8   		@ Se copia el valor de r8 en r10, donde se irá acumulando el denominador del polinomio de Taylor.
-    mov r12, #6       		@ Se carga el valor 6 en r12, una aproximación de 2*pi.
+    mov r12, #6280      	@ Se carga el valor 6 en r12, una aproximación de 2*pi por un escalado de 1000.
     mul r10, r12       		@ Se multiplica x por 6 y se almacena en r8.
-    mov r12, #4125     		@ Se carga el valor 75 en r12, siendo este Lxy.
+    mov r12, #75     		@ Se carga el valor 75 en r12, siendo este Lxy.
     sdiv r10, r12      		@ Se realiza una división entera de 6x entre 75 y se almacena en r8.
-    mov r12, #0x13b0  		@ Se carga 7! en r12, que acompaña al termino con x de menor grado.
-    mul r10, r12      		@ Se multiplica x por 7! y se actualiza r10.
-    mov r4, r10        		@ Se copia el valor de x en r4 para calcular la potencia.
-    mov r3, #7     		@ Se carga el valor 7 en r3. como indice
-    b power           		@ Salto a la etiqueta power para calcular potencias.
-
-power:
-    sub r3, #1         		@ Decrementa r3 en 1 para calcular la siguiente potencia.
-    mul r4, r8         		@ Multiplica r4 por r8 y actualiza r4, con el acumulado de la potencia.
-    cmp r3, #5         		@ Compara r3 con 5, para añadir al denominador el grado 3 del polinomio de Taylor.
-    beq pow3           		@ Si r3 es igual a 5, salta a pow3.
-    cmp r3, #3         		@ Compara r3 con 3, para añadir al denominador el grado 5 del polinomio de Taylor
-    beq pow5           		@ Si r3 es igual a 3, salta a pow5.
-    cmp r3, #1         		@ Compara r3 con 1, para añadir al denominador el grado 7 del polinomio de Taylor
-    ble pow7           		@ Si r3 es menor o igual a 1, salta a pow7.
-    b power
-
-pow3:
-    mov r11, r4        		@ Se copia el valor de r4 en r11 un registro temporal.
-    mov r12, #0x348    		@ Se carga 840 al registro 12 para el término de grado 3.
-    mul r11, r12       		@ Se multiplica r11 por r12 y se actualiza r11, con la potencia por el coeficiente.
-    sub r10, r11       		@ Se resta r11 de r10.
-    b power            		@ Salto de vuelta a la etiqueta power.
-
-pow5:
-    mov r11, r4        		@ Se copia el valor de r4 en r11 un registro temporal.
-    mov r12, #0x2a     		@ Se carga 42 al registro 12 para el término de grado 5.
-    mul r11, r12       		@ Se multiplica r11 por r12 y se actualiza r11, con la potencia por el coeficiente.
-    add r10, r11       		@ Se suma r11 a r10.
-    b power            		@ Salto de vuelta a la etiqueta power.
-
-pow7:
-    sub r10, r4        		@ Se resta la potencia de grado 7 de r10.
-    mul r10, r5        		@ Se multiplica r10 por r5, o sea Axy.
-    mov r12, #0x13b0   		@ Se carga 7! para la división
-    sdiv r10, r12      		@ Se realiza una división entera de del numerador por 7!.
-    add r10, r9        		@ Se suma r9 a r10, la coordenada y para cáclulo de x'.
+    mov r11, #0			@ Contador de signo
+    mov r12, #0
+    b mapping           	@ Salto a la etiqueta power para calcular seno..
     
+mapping:			@ Verifica signo mediante la resta de pi
+    ldr r4, =3140
+    cmp r10, r4
+    ble remapping
+    sub r10, r4
+    add r11, #1
+    b mapping
+
+remapping:			@ Mapea los valores a valores de 0 a pi/2
+    ldr r4, =1570
+    cmp r10, r4
+    ble sin_value
+    sub r10, r4
+    add r12, #1
+    b remapping
+    
+sin_value:			@ 12 rangos a trabajar del valor de seno
+    cmp r10, #0
+    beq set_cycle
+    
+    mov r4, #132
+    cmp r10, r4
+    ble set_cycle
+    
+    mov r4, #262
+    cmp r10, r4
+    ble set_cycle
+    
+    ldr r4, =392
+    cmp r10, r4
+    ble range3
+    
+    ldr r4, =524
+    cmp r10, r4
+    ble range4
+    
+    ldr r4, =654
+    cmp r10, r4
+    ble range5
+    
+    ldr r4, =786
+    cmp r10, r4
+    ble range6
+    
+    ldr r4, =916
+    cmp r10, r4
+    ble range7
+    
+    ldr r4, =1046
+    cmp r10, r4
+    ble range8
+    
+    ldr r4, =1178
+    cmp r10, r4
+    ble range9
+    
+    ldr r4, =1308
+    cmp r10, r4
+    ble range10
+    
+    ldr r4, =1440
+    cmp r10, r4
+    ble range11
+    
+    ldr r4, =1570
+    cmp r10, r4
+    ble range12
+    
+range3:				@ Rangos para valores de seno
+    ldr r10, =382
+    b set_cycle
+    
+range4:
+    ldr r10, =500
+    b set_cycle
+    
+range5:
+    ldr r10, =608
+    b set_cycle
+    
+range6:
+    ldr r10, =708
+    b set_cycle
+    
+range7:
+    ldr r10, =793
+    b set_cycle
+    
+range8:
+    ldr r10, =865
+    b set_cycle
+    
+range9:
+    ldr r10, =924
+    b set_cycle
+    
+range10:
+    ldr r10, =966
+    b set_cycle
+    
+range11:
+    ldr r10, =991
+    b set_cycle
+    
+range12:
+    ldr r10, =999
+    b set_cycle
+    
+set_cycle:
+    cmp r12, #1
+    beq adjust_cycle
+    b set_sign
+    
+adjust_cycle:
+    ldr r4, =1000
+    sub r10, r4, r10
+    b set_sign  
+    
+set_sign:			@ Ajusta el valor de seno a rango 0-1
+    and r11, r11, #1
+    mul r10, r5
+    ldr r12, =1000
+    sdiv r10, r12
+    cmp r11, #1    		@ Verifica si el signo debe ser positivo o negativo
+    beq resta
+    b suma
+    
+suma:
+    add r10, r9, r10		@ Caso positivo
+    b result
+
+resta:				@ Caso negativo
+    sub r10, r9, r10
+    b result
+    
+result:
     mov r4, r2         		@ Recuperar el registro del archivo de escritura
-    mov r12, r5  		@ move k value to temp
+    mov r12, r5  		@ Movemos la k a un valor temporal
     
     cmp r10, #640 		@ Valida que los números se encuentren dentro de las posibles coordenadas
     bge validate
@@ -163,6 +266,7 @@ pow7:
     blt validate
 
     b itoa			@ Conversion from Integer to ASCII
+
     
 validate:
     mov r10, #999
