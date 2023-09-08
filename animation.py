@@ -1,5 +1,6 @@
 import cv2
 import os
+import shutil
 
 """
 Tecnológico de Costa Rica
@@ -25,7 +26,7 @@ def animate():
     image_files.sort(key=lambda x: int(os.path.splitext(os.path.basename(x))[0][-2:]))
 
     # Establecer el nombre del archivo de video de salida
-    output_video = 'animacion.mp4'
+    output_video = 'animation.mp4'
 
     # Definir la velocidad de cuadros (frames por segundo)
     frame_rate = 4  
@@ -45,6 +46,7 @@ def animate():
 
     # Liberar el escritor de video
     video_writer.release()
-
+    os.chmod(output_video, 0o666)
 
     print(f"Video '{output_video}' created successfully.")
+

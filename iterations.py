@@ -32,6 +32,7 @@ def replace(new_content, line_number, file_path = "rippling.s"):
     """
     try:
         # Abre archivo y recorre lineas hasta encontrar la especifica e inserta la nueva linea
+        os.chmod(file_path, 0o600)
         with open(file_path, 'r') as file:
             lines = file.readlines()
 

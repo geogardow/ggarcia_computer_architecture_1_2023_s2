@@ -1,6 +1,7 @@
 from preprocess import *
 from iterations import *
 from animation import *
+import os
 
 """
 Tecnológico de Costa Rica
@@ -106,4 +107,6 @@ if decision == "r":
 elif decision == "i":
     independent()
 
-
+os.chmod("rippling.s", 0o666)
+os.chmod("rippling.o", 0o666)
+os.chmod("rippling", 0o666)
